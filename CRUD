@@ -45,11 +45,17 @@ app.get('/records/:id', (req, res) => {
 
 // Create a new record
 app.post('/records', (req, res) => {
+  const { title, description } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).send('Data is invalid. Title and description are required.');
+  }
+
   const records = readData();
   const newRecord = {
     id: Math.floor(Math.random() * 1000000),
-    title: req.body.title,
-    description: req.body.description
+    title,
+    description
   };
   records.push(newRecord);
   writeData(records);
@@ -58,8 +64,12 @@ app.post('/records', (req, res) => {
 
 // Update a record by ID
 app.put('/records/:id', (req, res) => {
-  const recordId = parseInt(req.params.id); // Parse the ID as an integer
+  const recordId = parseInt(req.params.id);
   const { title, description } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).send('Data is invalid. Title and description are required.');
+  }
 
   // Read the existing records from the file
   dataArray = readData();
